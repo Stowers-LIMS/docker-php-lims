@@ -70,8 +70,7 @@ RUN apt-get install -y \
     docker-php-ext-install -j$(nproc) zip
 
 # Clean up unneccessary package information
-RUN rm -rf /var/lib/apt/lists/* && \
-    apt-get clean all
+RUN rm -rf /var/lib/apt/lists/*
 
 COPY php.ini /usr/local/etc/php/
 

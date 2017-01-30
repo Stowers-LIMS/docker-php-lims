@@ -31,6 +31,11 @@ RUN apt-get install -y \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
     docker-php-ext-install -j$(nproc) ldap
 
+# Install needed php extension: mcrypt
+RUN apt-get install -y \
+    libmcrypt-dev && \
+    docker-php-ext-install -j$(nproc) mcrypt
+
 # Install needed php extension: memcached
 RUN apt-get install -y \
     libmemcached-dev && \
@@ -41,10 +46,8 @@ RUN apt-get install -y \
     && docker-php-ext-install memcached \
     && rm /tmp/memcached.tar.gz
 
-# Install needed php extension: mcrypt
-RUN apt-get install -y \
-    libmcrypt-dev && \
-    docker-php-ext-install -j$(nproc) mcrypt
+# Install OCI-8
+# RUN docker-php-ext-install -j$(nproc) oci8
 
 # Enable Opcache
 RUN docker-php-ext-enable opcache
@@ -69,13 +72,59 @@ RUN apt-get install -y \
     zlib1g-dev && \
     docker-php-ext-install -j$(nproc) zip
 
+# Utility packages
+RUN apt-get install -y vim
+
 # Clean up unneccessary package information
 RUN rm -rf /var/lib/apt/lists/* && \
     apt-get clean all
 
-COPY php.ini /usr/local/etc/php/
+COPY resources/usr/local/etc/php/php.ini /usr/local/etc/php/
 
 # Set up Apache
 RUN a2enmod rewrite
 
-WORKDIR /var/www/html
+COPY resources/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html/Symfony
+
+# Create user to run webserver and shell commands as
+# These need to be the same because the web app requires writable access to many
+# directories
+RUN useradd --create-home --uid 5000 --shell /bin/bash limsuser && \
+    usermod --lock limsuser && \
+    chown -R limsuser:limsuser ~limsuser/
+
+#
+# a+r on /root/.bash_profile to prevent error message when doing su -p - limsuser in shell commands
+#
+RUN echo "Configuring directories..." \
+    && mkdir -p /var/lims/composer/vendor \
+    && mkdir -p /var/lims/composer/cache \
+    && mkdir -p /var/lims/composer/bin \
+    && mkdir -p /var/lims/symfony/bootstrap \
+    && mkdir -p /var/lims/symfony/cache \
+    && mkdir -p /var/lims/symfony/logs \
+    && mkdir -p /var/lims/symfony/www \
+    && mkdir -p /var/lims/symfony/sessions \
+    && mkdir -p /var/lims/datastore \
+    && mkdir -p /var/lims/zanmodules/smarty \
+    && mkdir -p /var/lims/environment \
+    && mkdir -p /var/lims/external-drives/n/projects \
+    \
+    && chown -R limsuser:limsuser /var/lims \
+    && echo "DONE"
+
+COPY resources/etc/apache2/envvars /etc/apache2/
+
+COPY resources/root/docker-entrypoint.sh /root/
+COPY resources/usr/local/bin/dockerlims-shell /usr/local/bin/
+COPY resources/usr/local/bin/dockerlims-test /usr/local/bin/
+
+COPY resources/var/lims/setup/legacy-setup.sql /var/lims/setup/
+COPY resources/var/lims/setup/setup.sql /var/lims/setup/
+
+COPY resources/var/lims/environment/test /var/lims/environment/
+
+# NOTE: must use json syntax process is not started in a subshell (and signals are passed correctly)
+ENTRYPOINT ["/root/docker-entrypoint.sh"]

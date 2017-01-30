@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+source /var/lims/environment/test
+
+cd /var/www/html/Symfony
+
+bin/composer.phar install --no-scripts
+
+bin/rebuild-bootstrap.sh
+
+/var/lims/composer/bin/phpunit -c app/

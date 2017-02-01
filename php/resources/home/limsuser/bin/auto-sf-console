@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Recursively searches parent directores for the Symfony console command
+#
+
+#
+# Magic variables
+__DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+#
+# Recursively finds a path by checking parent directories
+# until the root directory is found or the specified path
+# is found
+#
+# @param targetPath - Path to search for, ex: bin/project-script.sh
+#
+# @return fully-qualified path to the file, if found or an empty string if not found
+#
+function find_in_parents ()
+{
+  local targetPath="$1"; shift
+  local originalDir=`pwd`
+
+  until [ `pwd` = '/' ]; do
+    if [ -e "$targetPath" ]; then
+      echo "$(pwd)/${targetPath}"
+      return
+    else
+      cd ..
+    fi
+  done
+}
+
+
+TARGET_BINARY="app/console"
+BINARY_PATH=$(find_in_parents "${TARGET_BINARY}")
+
+# If this variable has a value, we've found the path in a parent
+# directory and can execute it
+if [ "$BINARY_PATH" != "" ]; then
+    # Verify that it's executable
+    chmod a+x "$BINARY_PATH"
+    php -d memory_limit=-1 "$BINARY_PATH" "$@"
+else
+    echo "Could not find ${TARGET_BINARY} in current directory or any parent directories"
+    exit 1
+fi

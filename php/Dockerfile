@@ -126,5 +126,9 @@ COPY resources/var/lims/setup/setup.sql /var/lims/setup/
 
 COPY resources/var/lims/environment/test /var/lims/environment/
 
+COPY resources/home/limsuser/.zan/zanmodules-defaults /home/limsuser/.zan/
+COPY resources/home/limsuser/bin/auto-sf-console /home/limsuser/bin/
+COPY resources/home/limsuser/.profile /home/limsuser/
+
 # NOTE: must use json syntax process is not started in a subshell (and signals are passed correctly)
 ENTRYPOINT ["/root/docker-entrypoint.sh"]

@@ -39,11 +39,17 @@ chown -R limsuser:limsuser /var/lims/
 
 # This will install dependencies. --no-scripts is necessary because building
 # the bootstrap file is another step
-su -p limsuser -c '/var/www/html/Symfony/bin/composer.phar install --no-scripts'
+
+#todo: enable --no-scripts when PR 194 is merged
+#su -p limsuser -c '/var/www/html/Symfony/bin/composer.phar install --no-scripts'
 
 # build bootstrap file
 # re-enable when this PR is merged: https://bitbucket.stowers.org/projects/LIMS/repos/symfony/pull-requests/194/overview
 #su -p limsuser -c '/var/www/html/Symfony/bin/rebuild-bootstrap.sh'
+
+
+# Run composer install
+su -p limsuser -c '/var/www/html/Symfony/bin/composer.phar install'
 
 #
 # Start apache in the foreground as the limsuser

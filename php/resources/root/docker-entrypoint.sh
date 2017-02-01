@@ -29,6 +29,7 @@ mysql -u root --password='root' -h db < /var/lims/setup/setup.sql
 
 # Ensure limsuser uid and gid matches environment configuration (see docker-compose.yml)
 : ${DOCKERLIMS_SHELL_UID:=5000}
+echo "Switching to UID ${DOCKERLIMS_SHELL_UID}"
 usermod -u ${DOCKERLIMS_SHELL_UID} limsuser
 groupmod -g ${DOCKERLIMS_SHELL_UID} limsuser
 

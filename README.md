@@ -17,6 +17,7 @@ This is the PHP container for the Stowers in-house LIMS application.
 
 ### PHP Extensions Added
 
+* gd
 * imap
 * intl
 * ldap
@@ -26,6 +27,7 @@ This is the PHP container for the Stowers in-house LIMS application.
 * PDO
   * MSSQL/SYBASE
   * MySQL
+  * mysqli
 * zip
 
 ### Additional Apache Modules Enabled

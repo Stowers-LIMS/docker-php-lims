@@ -67,10 +67,19 @@ RUN apt-get install -y \
 # Install PDO: MySQL
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
+# Install mysqli (used by the legacy system)
+RUN docker-php-ext-install mysqli
+
 # Install needed php extension: zip
 RUN apt-get install -y \
     zlib1g-dev && \
     docker-php-ext-install -j$(nproc) zip
+
+# Install needed php extension: gd
+# Used by molbio to generate images and sparklines
+RUN apt-get install -y \
+    libpng-dev && \
+    docker-php-ext-install -j$(nproc) gd
 
 # Utility packages
 RUN apt-get install -y vim

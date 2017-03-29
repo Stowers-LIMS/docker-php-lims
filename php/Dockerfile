@@ -72,6 +72,12 @@ RUN apt-get install -y \
     zlib1g-dev && \
     docker-php-ext-install -j$(nproc) zip
 
+# Install needed php extension: gd
+# Used by molbio to generate images and sparklines
+RUN apt-get install -y \
+    libpng-dev && \
+    docker-php-ext-install -j$(nproc) gd
+
 # Utility packages
 RUN apt-get install -y vim
 

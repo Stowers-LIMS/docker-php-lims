@@ -67,6 +67,9 @@ RUN apt-get install -y \
 # Install PDO: MySQL
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
+# Install mysqli (used by the legacy system)
+RUN docker-php-ext-install mysqli
+
 # Install needed php extension: zip
 RUN apt-get install -y \
     zlib1g-dev && \

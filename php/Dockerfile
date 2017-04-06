@@ -57,7 +57,7 @@ RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
 RUN docker-php-ext-install -j$(nproc) mcrypt
 
 # Install php extension: memcached
-RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz" \
+RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/v3.0.3.tar.gz" \
     && mkdir -p /usr/src/php/ext/memcached \
     && tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
     && docker-php-ext-configure memcached \

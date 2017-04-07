@@ -32,61 +32,63 @@ RUN apt-get install -y \
     freetds-common \
     freetds-dev \
     # For zip
-    zlib1g-dev
+    zlib1g-dev \
+    && \
 
 # Clean up unneccessary package information
-RUN rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/lib/apt/lists/* && \
     apt-get clean all
 
+RUN \
 # Install php extension: gd
 # Used by molbio to generate images and sparklines
-RUN docker-php-ext-install -j$(nproc) gd
+    docker-php-ext-install -j$(nproc) gd && \
 
 # Install php extension: imap
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-install -j$(nproc) imap
+    docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
+    docker-php-ext-install -j$(nproc) imap && \
 
 # Install php extension: intl
-RUN docker-php-ext-install -j$(nproc) intl
+    docker-php-ext-install -j$(nproc) intl && \
 
 # Install php extension: ldap
-RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
-    docker-php-ext-install -j$(nproc) ldap
+    docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+    docker-php-ext-install -j$(nproc) ldap && \
 
 # Install php extension: mcrypt
-RUN docker-php-ext-install -j$(nproc) mcrypt
+    docker-php-ext-install -j$(nproc) mcrypt && \
 
 # Install php extension: memcached
-RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/v3.0.3.tar.gz" \
-    && mkdir -p /usr/src/php/ext/memcached \
-    && tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
-    && docker-php-ext-configure memcached \
-    && docker-php-ext-install memcached \
-    && rm /tmp/memcached.tar.gz
+    curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/v3.0.3.tar.gz" && \
+    mkdir -p /usr/src/php/ext/memcached && \
+    tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 && \
+    docker-php-ext-configure memcached && \
+    docker-php-ext-install memcached && \
+    rm /tmp/memcached.tar.gz && \
 
 # Install php extension: OCI-8
-# RUN docker-php-ext-install -j$(nproc) oci8
+    # docker-php-ext-install -j$(nproc) oci8 && \
 
 # Enable Opcache
-RUN docker-php-ext-enable opcache
+    docker-php-ext-enable opcache && \
 
 # Install php extension: PDO
-RUN docker-php-ext-install -j$(nproc) pdo
+    docker-php-ext-install -j$(nproc) pdo && \
 
 # Install php extension: PDO: MSSQL/SYBASE
-RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so && \
+    ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so && \
     ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a && \
     ldconfig -v && \
-    docker-php-ext-install -j$(nproc) pdo_dblib
+    docker-php-ext-install -j$(nproc) pdo_dblib && \
 
 # Install php extension: PDO: MySQL
-RUN docker-php-ext-install -j$(nproc) pdo_mysql
+    docker-php-ext-install -j$(nproc) pdo_mysql && \
 
 # Install php extension: mysqli (used by the legacy system)
-RUN docker-php-ext-install mysqli
+    docker-php-ext-install mysqli && \
 
 # Install php extension: zip
-RUN docker-php-ext-install -j$(nproc) zip
+    docker-php-ext-install -j$(nproc) zip
 
 COPY resources/usr/local/etc/php/php.ini /usr/local/etc/php/
 

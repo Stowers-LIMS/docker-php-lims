@@ -22,7 +22,7 @@ This is the PHP container for the Stowers in-house LIMS application.
 * intl
 * ldap
 * mcrypt
-* memcached
+* memcached 3.0.3
 * Opcache
 * PDO
   * MSSQL/SYBASE

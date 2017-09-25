@@ -47,10 +47,6 @@ chown -R limsuser:limsuser /var/lims/
 # re-enable when this PR is merged: https://bitbucket.stowers.org/projects/LIMS/repos/symfony/pull-requests/194/overview
 #su -p limsuser -c '/var/www/html/Symfony/bin/rebuild-bootstrap.sh'
 
-
-# Run composer install
-su -p limsuser -c '/var/www/html/Symfony/bin/composer.phar install'
-
 #
 # Start apache in the foreground as the limsuser
 #

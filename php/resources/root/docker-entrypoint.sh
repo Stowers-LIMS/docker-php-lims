@@ -4,7 +4,7 @@ set -e
 # exit when docker sends SIGTERM (aka docker stop)
 onTerminate() {
     echo "Got SIGTERM, stopping apache..."
-    kill `cat /run/apache2/apache2.pid`
+    kill `cat /var/run/httpd/httpd.pid`
     exit
 }
 trap 'onTerminate' SIGTERM
@@ -54,5 +54,5 @@ su -p limsuser -c '/var/www/html/Symfony/bin/composer.phar install'
 #
 # Start apache in the foreground as the limsuser
 #
-/usr/local/bin/apache2-foreground &
+/usr/sbin/httpd -D FOREGROUND &
 wait $!

@@ -49,7 +49,5 @@ COPY resources/home/limsuser/.zan/zanmodules-defaults /home/limsuser/.zan/
 COPY resources/home/limsuser/bin/auto-sf-console /home/limsuser/bin/
 COPY resources/home/limsuser/.profile /home/limsuser/
 
-EXPOSE 80
-
 # NOTE: must use json syntax process is not started in a subshell (and signals are passed correctly)
 ENTRYPOINT ["/root/docker-entrypoint.sh"]

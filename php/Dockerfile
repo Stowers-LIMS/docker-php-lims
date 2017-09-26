@@ -1,101 +1,15 @@
-FROM php:7.1-apache
+FROM stowers/php-base:7.1
 
-MAINTAINER "Eric Poe" <eric.poe@gmail.com>
+LABEL maintainer="eric.poe@gmail.com"
 
-# Set TERM environment var - so terminal cmds like `top` work
-ENV TERM dumb
-
-RUN apt-get update && apt-get upgrade -y
-
-RUN apt-get install -y \
-    # Included applications
-    git \
-    mysql-client \
-    php-pear \
-    tree \
-    vim \
-    # Needed for building extensions
-    # For gd
-    libpng-dev \
-    # For imap
-    libc-client-dev \ 
-    libkrb5-dev \
-    # For intl
-    libicu-dev \
-    # For ldap
-    libldap2-dev \
-    # For mcrypt
-    libmcrypt-dev \
-    # For memcached
-    libmemcached-dev \
-    # For PDO MSSQL/SYBASE
-    freetds-common \
-    freetds-dev \
-    # For zip
-    zlib1g-dev \
-    && \
-
-# Clean up unneccessary package information
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean all
-
-RUN \
-# Install php extension: gd
-# Used by molbio to generate images and sparklines
-    docker-php-ext-install -j$(nproc) gd && \
-
-# Install php extension: imap
-    docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-install -j$(nproc) imap && \
-
-# Install php extension: intl
-    docker-php-ext-install -j$(nproc) intl && \
-
-# Install php extension: ldap
-    docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
-    docker-php-ext-install -j$(nproc) ldap && \
-
-# Install php extension: mcrypt
-    docker-php-ext-install -j$(nproc) mcrypt && \
-
-# Install php extension: memcached
-    curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/v3.0.3.tar.gz" && \
-    mkdir -p /usr/src/php/ext/memcached && \
-    tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 && \
-    docker-php-ext-configure memcached && \
-    docker-php-ext-install memcached && \
-    rm /tmp/memcached.tar.gz && \
-
-# Install php extension: OCI-8
-    # docker-php-ext-install -j$(nproc) oci8 && \
-
-# Enable Opcache
-    docker-php-ext-enable opcache && \
-
-# Install php extension: PDO
-    docker-php-ext-install -j$(nproc) pdo && \
-
-# Install php extension: PDO: MSSQL/SYBASE
-    ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so && \
-    ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a && \
-    ldconfig -v && \
-    docker-php-ext-install -j$(nproc) pdo_dblib && \
-
-# Install php extension: PDO: MySQL
-    docker-php-ext-install -j$(nproc) pdo_mysql && \
-
-# Install php extension: mysqli (used by the legacy system)
-    docker-php-ext-install mysqli && \
-
-# Install php extension: zip
-    docker-php-ext-install -j$(nproc) zip
+# Set up MySQL Client
+RUN yum update && \
+    yum install -y mysql
 
 COPY resources/usr/local/etc/php/php.ini /usr/local/etc/php/
 
 # Set up Apache
-RUN a2enmod rewrite
-
-COPY resources/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY resources/etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
 
 WORKDIR /var/www/html/Symfony
 
@@ -125,8 +39,6 @@ RUN echo "Configuring directories..." \
     \
     && chown -R limsuser:limsuser /var/lims \
     && echo "DONE"
-
-COPY resources/etc/apache2/envvars /etc/apache2/
 
 COPY resources/root/docker-entrypoint.sh /root/
 COPY resources/usr/local/bin/dockerlims-shell /usr/local/bin/

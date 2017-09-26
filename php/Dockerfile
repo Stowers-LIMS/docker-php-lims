@@ -2,6 +2,10 @@ FROM stowers/php-base:7.1
 
 LABEL maintainer="eric.poe@gmail.com"
 
+# Set up MySQL Client
+RUN yum update && \
+    yum install -y mysql
+
 COPY resources/usr/local/etc/php/php.ini /usr/local/etc/php/
 
 # Set up Apache

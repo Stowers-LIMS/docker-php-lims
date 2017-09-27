@@ -15,7 +15,7 @@ trap 'onTerminate' SIGTERM
 # Skip if mysql host isn't connected
 if host db ; then
     # Wait for database to be started...
-    until echo "show tables" | mysql -h db -u limsdbuser --password='limsdbpassword' limsdockerdb &> /dev/null
+    until echo "show tables" | mysql -h db -u root --password='root' &> /dev/null
     do
         echo "Waiting for mysql..."
         sleep 2

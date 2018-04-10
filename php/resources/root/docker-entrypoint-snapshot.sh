@@ -14,7 +14,7 @@ trap 'onTerminate' SIGTERM
 #
 
 # Wait for database to be started...
-until echo "show tables" | mysql -h db -u limsdbuser --password='limsdbpassword' limsdockerdb &> /dev/null
+until echo "show databases" | mysql -h db -u limsdbuser --password='limsdbpassword' limsdockerdb &> /dev/null
 do
     echo "Waiting for mysql..."
     sleep 2

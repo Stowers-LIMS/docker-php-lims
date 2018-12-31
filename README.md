@@ -13,18 +13,21 @@ This is the PHP container for the Stowers in-house LIMS application.
 * **mysql-client** - Needed to connect to the linked mysql server from bash
 * **php-pear** - Required by some of our legacy modules
 * **tree** - Used by our filesystem parser
+* **vim** - For convenience when debugging and accessing the container directly
 
 ### PHP Extensions Added
 
+* gd
 * imap
 * intl
 * ldap
 * mcrypt
-* memcached
+* memcached 3.0.3
 * Opcache
 * PDO
   * MSSQL/SYBASE
   * MySQL
+  * mysqli
 * zip
 
 ### Additional Apache Modules Enabled

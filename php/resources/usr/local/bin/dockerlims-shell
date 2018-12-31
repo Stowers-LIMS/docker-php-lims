@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Update HOME, but keep the rest of the environment
+HOME=/home/limsuser su --preserve-environment --login limsuser

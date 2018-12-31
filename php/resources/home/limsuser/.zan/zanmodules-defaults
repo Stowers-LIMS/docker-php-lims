@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Zan Modules default variables
+export ZMD_DATABASE_HOST="db"
+export ZMD_DATABASE_USER="limsdbuser"
+export ZMD_DATABASE_PASS="limsdbpassword"
+export ZMD_DATABASE_NAME="limsdockerdb"
+
+export ZMD_DATASTORE_ROOT="/var/lims/datastore"
+
+# Determine project ID by checking DOCKERLIMS_HOST_ID
+export ZMD_PROJECT_ID="${DOCKERLIMS_HOST_ID}"
+
+#
+# Figure out what hostname to use
+#
+
+# docker hosts at Zan Consulting
+if [[ "${DOCKERLIMS_HOSTED_ON}" == docker*.office.zanconsulting.com ]]; then
+    export ZMD_SERVER_HOSTNAME="${ZMD_PROJECT_ID}".zan-office.limsdev.site
+fi
+
+# docker hosts at Stowers
+if [[ "${DOCKERLIMS_HOSTED_ON}" == vlims.sgc.loc ]]; then
+    export ZMD_SERVER_HOSTNAME="${ZMD_PROJECT_ID}".stowers.limsdev.site
+fi

@@ -1,4 +1,4 @@
-FROM stowers/php-base:7.1
+FROM stowers/php-base:7.4
 
 LABEL maintainer="eric.poe@gmail.com"
 
